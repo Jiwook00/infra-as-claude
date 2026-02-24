@@ -60,7 +60,7 @@ sequenceDiagram
 
 | 기능                    | 설명                                                                                 |
 | ----------------------- | ------------------------------------------------------------------------------------ |
-| **6개 슬래시 커맨드**   | `/inventory`, `/costs`, `/find-unused`, `/audit-sg`, `/plan-removal`, `/update-docs` |
+| **7개 슬래시 커맨드**   | `/inventory`, `/costs`, `/find-unused`, `/audit-sg`, `/plan-removal`, `/update-docs`, `/commit` |
 | **상태 스냅샷**         | 리소스 상태를 JSON으로 저장, 실행할 때마다 이전과 diff 비교                          |
 | **자동 활동 로그**      | `PostToolUse` 훅 → `scripts/log-aws-call.py`로 모든 AWS CLI 호출이 자동 기록됨       |
 | **자동 문서 업데이트**  | `/update-docs`로 CHANGELOG와 레퍼런스 문서를 동기화                                  |
@@ -183,6 +183,14 @@ VPC 내 모든 보안그룹을 감사합니다. 위험도(HIGH / MEDIUM / LOW / 
 /update-docs
 ```
 
+### `/commit`
+
+현재 git 변경사항을 분석하고 Conventional Commits 형식의 한국어 커밋 메시지를 제안합니다. 변경사항을 그룹별로 분석해 단일 또는 분할 커밋을 안내합니다.
+
+```
+/commit
+```
+
 ---
 
 ## 프로젝트 구조
@@ -204,7 +212,8 @@ claude-aws-infra-kit/
 │       ├── find-unused.md         # /find-unused 커맨드
 │       ├── audit-sg.md            # /audit-sg 커맨드
 │       ├── plan-removal.md        # /plan-removal 커맨드
-│       └── update-docs.md         # /update-docs 커맨드
+│       ├── update-docs.md         # /update-docs 커맨드
+│       └── commit.md              # /commit 커맨드
 │
 ├── scripts/
 │   └── log-aws-call.py            # PostToolUse 훅 — AWS CLI 호출을 activity.log에 기록

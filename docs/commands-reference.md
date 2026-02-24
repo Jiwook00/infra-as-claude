@@ -1,6 +1,6 @@
 # 커맨드 레퍼런스
 
-> 이 파일은 `/update-docs` 에 의해 자동으로 동기화됩니다. 최종 업데이트: _CHANGELOG.md 참고_
+> 이 파일은 `/update-docs` 에 의해 자동으로 동기화됩니다. 최종 업데이트: 2026-02-24
 
 ---
 
@@ -109,3 +109,20 @@
 ```
 /update-docs
 ```
+
+---
+
+## /commit
+
+**파일**: `.claude/commands/commit.md`
+
+현재 git 변경사항을 분석하고 Conventional Commits 형식의 한국어 커밋 메시지를 제안합니다. 변경사항을 그룹별로 분석해 단일 또는 분할 커밋을 안내합니다.
+
+**커밋 타입**: `feat`, `fix`, `style`, `refactor`, `chore`, `docs`
+
+**사용법**:
+```
+/commit
+```
+
+**출력**: 커밋 메시지 제안 → 확인(y / edit / cancel) → 커밋 실행
