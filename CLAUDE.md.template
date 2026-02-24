@@ -1,0 +1,61 @@
+# AWS Infrastructure Management
+
+## AWS Environment
+
+- **Profile**: `{{AWS_PROFILE}}` (use `--profile {{AWS_PROFILE}}` in all AWS CLI commands)
+- **Region**: `{{AWS_REGION}}` (use `--region {{AWS_REGION}}` in all commands)
+- **Account ID**: `{{AWS_ACCOUNT_ID}}`
+- **Main Domain**: `*.{{MAIN_DOMAIN}}`
+- **VPC**: `{{VPC_ID}}`
+
+## Working Rules
+
+1. **Query first**: Before any change, query current state and save to `state/` folder
+2. **Plan mode**: For destructive changes, enter plan mode and analyze dependencies before proceeding
+3. **Approve before execute**: All delete/modify operations require explicit user approval
+4. **Log everything**: Record all infrastructure changes in the `logs/` folder
+5. **Suggest protected resources**: While working, if a resource appears to be shared across multiple services (referenced by 3+ resources, or clearly foundational infrastructure), proactively suggest adding it to the Protected Resources table — see below
+
+## state/ Folder
+
+- Running `/inventory` saves current AWS resource state as JSON files to `state/`
+- On subsequent runs, diffs against the previous snapshot are shown
+- Treat this like an IaC state file — commit it to track infrastructure over time
+
+## Protected Resources (Do Not Delete)
+
+The following resources are shared across multiple services and must never be deleted:
+
+| Resource | ID / Name | Purpose |
+|----------|-----------|---------|
+| VPC | `{{VPC_ID}}` | Main VPC |
+| _(add your shared ALBs, Security Groups, Key Pairs, etc. here)_ | | |
+
+> If a protected resource is identified as a deletion candidate, warn the user and require explicit confirmation.
+
+### Suggesting new protected resources
+
+While working (e.g. during `/inventory`, `/audit-sg`, `/plan-removal`, or any investigation), if a resource looks like it should be protected but isn't listed above, suggest it to the user:
+
+```
+"sg-0abc1234 (bastion-sg) 가 현재 7개 인스턴스에서 사용되고 있어요.
+보호 리소스 목록에 추가할까요? [y/N]"
+```
+
+If the user confirms, update the Protected Resources table in this file immediately.
+
+## Custom Slash Commands
+
+- `/inventory` — Query all resources and save state snapshot
+- `/costs` — Estimate monthly costs by resource
+- `/find-unused` — Find idle/orphaned resources
+- `/plan-removal` — Create dependency-aware removal plan
+- `/audit-sg` — Security group audit
+- `/update-docs` — Sync CHANGELOG.md and docs from recent activity
+
+## AWS CLI Rules
+
+- Always include `--profile {{AWS_PROFILE}} --region {{AWS_REGION}}` in every command
+- Always use `--output json` for parseable output
+- Read-only commands (`describe-*`, `list-*`, `get-*`) are auto-allowed — no confirmation needed
+- Write commands (`create-*`, `delete-*`, `modify-*`, `update-*`, `terminate-*`) require user approval

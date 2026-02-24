@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(aws * describe-* --profile {{AWS_PROFILE}} *)",
+      "Bash(aws * list-* --profile {{AWS_PROFILE}} *)",
+      "Bash(aws * get-* --profile {{AWS_PROFILE}} *)",
+      "Bash(aws ec2 describe-* --profile {{AWS_PROFILE}} *)",
+      "Bash(aws elbv2 describe-* --profile {{AWS_PROFILE}} *)",
+      "Bash(aws autoscaling describe-* --profile {{AWS_PROFILE}} *)",
+      "Bash(aws rds describe-* --profile {{AWS_PROFILE}} *)",
+      "Bash(aws cloudfront list-* --profile {{AWS_PROFILE}} *)",
+      "Bash(aws cloudfront get-* --profile {{AWS_PROFILE}} *)",
+      "Bash(aws route53 list-* --profile {{AWS_PROFILE}} *)",
+      "Bash(aws acm list-* --profile {{AWS_PROFILE}} *)",
+      "Bash(aws acm describe-* --profile {{AWS_PROFILE}} *)",
+      "Bash(aws iam list-* --profile {{AWS_PROFILE}} *)",
+      "Bash(aws iam get-* --profile {{AWS_PROFILE}} *)",
+      "Bash(aws cloudwatch describe-* --profile {{AWS_PROFILE}} *)",
+      "Bash(aws sts get-caller-identity --profile {{AWS_PROFILE}} *)",
+      "Bash(curl -s *)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -q 'aws '; then echo \"[$(date '+%Y-%m-%d %H:%M:%S')] $(echo $CLAUDE_TOOL_INPUT | head -c 200)\" >> logs/activity.log; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
