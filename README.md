@@ -79,6 +79,12 @@ sequenceDiagram
 
 ## 빠른 시작
 
+**Claude Code**만 설치되어 있으면 됩니다. Claude Code를 열고 아래 메시지를 그대로 붙여넣으세요:
+
+```
+https://github.com/Jiwook00/claude-aws-infra-kit 의 README를 읽고, 이 킷을 처음 설정하는 과정을 단계별로 안내해줘.
+```
+
 ### 1단계 — 이 저장소를 Fork
 
 페이지 상단의 **Fork** 버튼을 눌러 내 GitHub 계정에 복사본을 만드세요.
