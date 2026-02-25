@@ -1,4 +1,4 @@
-# claude-aws-infra-kit
+# infra-as-claude
 
 > Claude Code로 AWS 인프라를 관리하는 Kit — 슬래시 커맨드, 자동 상태 스냅샷, 보안 감사, 비용 분석, 자동 업데이트 문서화까지.
 
@@ -84,7 +84,7 @@ sequenceDiagram
 **Claude Code**만 설치되어 있으면 됩니다. Claude Code를 열고 아래 메시지를 그대로 붙여넣으세요:
 
 ```
-https://github.com/Jiwook00/claude-aws-infra-kit 의 README를 읽고, 이 킷을 처음 설정하는 과정을 단계별로 안내해줘.
+https://github.com/Jiwook00/infra-as-claude 의 README를 읽고, 이 킷을 처음 설정하는 과정을 단계별로 안내해줘.
 ```
 
 ### 1단계 — 이 저장소를 Fork
@@ -98,8 +98,8 @@ https://github.com/Jiwook00/claude-aws-infra-kit 의 README를 읽고, 이 킷�
 ### 2단계 — Fork한 저장소 clone
 
 ```bash
-git clone https://github.com/내_깃허브_아이디/claude-aws-infra-kit.git
-cd claude-aws-infra-kit
+git clone https://github.com/내_깃허브_아이디/infra-as-claude.git
+cd infra-as-claude
 ```
 
 ### 3단계 — setup.sh 실행
@@ -196,7 +196,7 @@ VPC 내 모든 보안그룹을 감사합니다. 위험도(HIGH / MEDIUM / LOW / 
 ## 프로젝트 구조
 
 ```
-claude-aws-infra-kit/
+infra-as-claude/
 │
 ├── README.md                      # 이 파일
 ├── CHANGELOG.md                   # /update-docs가 자동으로 업데이트
@@ -305,7 +305,7 @@ aws * terminate-*
 Fork한 저장소에서 upstream 개선 사항을 가져오려면:
 
 ```bash
-git remote add upstream https://github.com/danny-ys/claude-aws-infra-kit.git
+git remote add upstream https://github.com/danny-ys/infra-as-claude.git
 git fetch upstream
 git merge upstream/main
 ```

@@ -1,6 +1,6 @@
 # 설치 가이드
 
-`claude-aws-infra-kit` 을 처음부터 설정하는 단계별 가이드입니다.
+`infra-as-claude` 을 처음부터 설정하는 단계별 가이드입니다.
 
 ---
 
@@ -53,8 +53,8 @@ aws --version
 ## 3. setup.sh 실행
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/claude-aws-infra-kit.git
-cd claude-aws-infra-kit
+git clone https://github.com/YOUR_USERNAME/infra-as-claude.git
+cd infra-as-claude
 ./setup.sh
 ```
 

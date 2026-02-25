@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# claude-aws-infra-kit — setup.sh
+# infra-as-claude — setup.sh
 # Interactively configures your local environment from the kit templates.
 # =============================================================================
 
@@ -16,7 +16,7 @@ NC='\033[0m'
 print_header() {
   echo ""
   echo -e "${CYAN}${BOLD}================================================${NC}"
-  echo -e "${CYAN}${BOLD}   claude-aws-infra-kit  ·  Setup${NC}"
+  echo -e "${CYAN}${BOLD}   infra-as-claude  ·  Setup${NC}"
   echo -e "${CYAN}${BOLD}================================================${NC}"
   echo ""
 }
