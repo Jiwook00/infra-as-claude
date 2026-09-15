@@ -16,8 +16,7 @@
       "Bash(aws iam list-* --profile {{AWS_PROFILE}} *)",
       "Bash(aws iam get-* --profile {{AWS_PROFILE}} *)",
       "Bash(aws cloudwatch describe-* --profile {{AWS_PROFILE}} *)",
-      "Bash(aws sts get-caller-identity --profile {{AWS_PROFILE}} *)",
-      "Bash(curl -s *)"
+      "Bash(aws sts get-caller-identity --profile {{AWS_PROFILE}} *)"
     ]
   },
   "hooks": {
