@@ -35,16 +35,23 @@
 
 ---
 
-## 인프라 변경 이력 추적
+## 인프라 변경 이력 추적 (opt-in)
 
-`state/` 폴더를 git에 커밋하세요. 인프라 이력이 쌓입니다:
+`state/*.json` 은 **기본적으로 gitignore** 됩니다 — 스냅샷에는 사설 IP, ARN 등 인프라
+메타데이터가 담기므로 실수로 공개 저장소에 올라가는 것을 막기 위함입니다.
+
+팀에서 인프라 이력을 공유하고 싶다면 **private 저장소**에서만 opt-in 하세요. `.gitignore`
+에서 `state/*.json` 줄을 제거한 뒤 커밋합니다:
 
 ```bash
+# .gitignore 에서 `state/*.json` 줄을 먼저 제거 (private repo에서만!)
 git add state/
 git commit -m "infra snapshot: old-service EC2 제거"
 ```
 
 상태 파일에 `git diff` 를 사용하면 임의의 두 시점 사이에 무엇이 변경됐는지 파악할 수 있습니다.
+
+> ⚠️ 공개 저장소에는 절대 `state/` 를 커밋하지 마세요. 인프라 구조가 그대로 노출됩니다.
 
 ---
 
@@ -80,6 +87,43 @@ git commit -m "infra snapshot: old-service EC2 제거"
 ```
 
 HIGH 발견 사항은 즉시 조치하세요. MEDIUM은 매주 검토하고, LOW/INFO는 정보성 항목으로 월 1회 검토하면 됩니다.
+
+---
+
+## 팀에서 함께 쓰기
+
+여러 명이 같은 AWS 계정을 관리할 때, "무엇을 공유하고(committed) 무엇을 각자 로컬에 두는지"
+를 명확히 나눠야 A가 바꾼 설정이 B에게 충돌 없이 전파됩니다.
+
+### 항상 공유 (기본 committed)
+
+킷이 처음부터 커밋하는 파일들 — 그대로 pull/merge 하면 전파됩니다.
+
+- `.claude/commands/*` — 슬래시 커맨드 정의
+- `CLAUDE.md.template`, `.claude/settings.json.example` — 템플릿
+- `setup.sh`, `docs/`
+
+### 항상 로컬 (절대 커밋 금지)
+
+- `~/.aws/credentials` 의 **실제 액세스 키** (레포 밖에 저장됨 — 어떤 경우에도 커밋 금지)
+- `.env` (프로필 이름 등 개인 값), `logs/` (개인 활동 로그)
+
+### 권장: 프로파일 이름 통일 + 직접 커밋
+
+`CLAUDE.md`(보호 리소스·규칙·계정 정보)와 `.claude/settings.json`(권한 허용 목록)은
+내용이 팀 전체에 동일합니다. 문제는 이 두 파일에 박히는 **AWS 프로파일 이름**만 사람마다
+다르다는 점 — 이것만 통일하면 두 파일을 그대로 공유할 수 있습니다.
+
+1. **팀이 동일한 프로파일 이름을 합의합니다** (예: `team-prod`).
+   각 팀원은 `aws configure --profile team-prod` 로 **본인 키만** 로컬에 등록합니다.
+   (키는 `~/.aws/credentials` 에만 저장되고 커밋되지 않습니다.)
+2. **private 포크에서** `.gitignore` 의 `CLAUDE.md` 와 `.claude/settings.json` 줄을 제거하고
+   두 파일을 커밋합니다.
+3. 이제 A가 보호 리소스를 추가하거나 권한을 바꾸면, B는 `git pull` 만으로 그대로 반영됩니다.
+   `setup.sh` 재실행이나 수동 병합이 필요 없습니다.
+
+> ⚠️ `CLAUDE.md` 에는 계정 ID·VPC·보호 리소스가 들어갑니다. **반드시 private 저장소에서만**
+> 커밋하세요. `state/` 이력 공유도 위 "인프라 변경 이력 추적 (opt-in)" 방식으로 함께 쓸 수 있습니다.
 
 ---
 

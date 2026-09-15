@@ -20,7 +20,9 @@
 
 - Running `/inventory` saves current AWS resource state as JSON files to `state/`
 - On subsequent runs, diffs against the previous snapshot are shown
-- Treat this like an IaC state file — commit it to track infrastructure over time
+- `state/*.json` is gitignored by default (snapshots contain infra metadata such as
+  private IPs and ARNs). To track infrastructure history as a team, opt in inside your
+  **private** fork — see `docs/patterns.md`(팀에서 함께 쓰기)
 
 ## Protected Resources (Do Not Delete)
 
