@@ -58,15 +58,15 @@ sequenceDiagram
 
 ## 주요 기능
 
-| 기능                    | 설명                                                                                 |
-| ----------------------- | ------------------------------------------------------------------------------------ |
+| 기능                    | 설명                                                                                            |
+| ----------------------- | ----------------------------------------------------------------------------------------------- |
 | **7개 슬래시 커맨드**   | `/inventory`, `/costs`, `/find-unused`, `/audit-sg`, `/plan-removal`, `/update-docs`, `/commit` |
-| **상태 스냅샷**         | 리소스 상태를 JSON으로 저장, 실행할 때마다 이전과 diff 비교                          |
-| **자동 활동 로그**      | `PostToolUse` 훅 → `scripts/log-aws-call.py`로 모든 AWS CLI 호출이 자동 기록됨       |
-| **자동 문서 업데이트**  | `/update-docs`로 CHANGELOG와 레퍼런스 문서를 동기화                                  |
-| **읽기 전용 자동 허용** | 조회 커맨드는 확인 없이 바로 실행                                                    |
-| **보호 리소스 설정**    | 공유 리소스를 등록하면 Claude가 실수로 삭제하지 않음                                 |
-| **원커맨드 셋업**       | `./setup.sh` 하나로 모든 설정 완료                                                   |
+| **상태 스냅샷**         | 리소스 상태를 JSON으로 저장, 실행할 때마다 이전과 diff 비교                                     |
+| **자동 활동 로그**      | `PostToolUse` 훅 → `scripts/log-aws-call.py`로 모든 AWS CLI 호출이 자동 기록됨                  |
+| **자동 문서 업데이트**  | `/update-docs`로 CHANGELOG와 레퍼런스 문서를 동기화                                             |
+| **읽기 전용 자동 허용** | 조회 커맨드는 확인 없이 바로 실행                                                               |
+| **보호 리소스 설정**    | 공유 리소스를 등록하면 Claude가 실수로 삭제하지 않음                                            |
+| **원커맨드 셋업**       | `./setup.sh` 하나로 모든 설정 완료                                                              |
 
 ---
 
@@ -75,7 +75,12 @@ sequenceDiagram
 - **Claude Code** — [설치 가이드](https://docs.anthropic.com/claude-code)
 - **AWS CLI v2** — [설치 가이드](https://aws.amazon.com/ko/cli/)
 - **Python 3** — macOS에 기본 설치됨. `python3 --version`으로 확인
-- 읽기 권한이 있는 **AWS 계정** (IAM 사용자 또는 역할)
+- **git** — 저장소 clone에 필요. `git --version`으로 확인
+- **AWS 계정 + 액세스 키** — 읽기 권한이 있는 IAM 사용자와 그 사용자의 **Access Key ID / Secret Access Key**.
+  아직 IAM 사용자나 액세스 키가 없다면 [설치 가이드 §2 — IAM 사용자 생성](docs/setup-guide.md#2-iam-사용자-생성-없는-경우)를 먼저 따라 하세요.
+
+> **환경**: `setup.sh`는 bash 스크립트입니다. macOS·Linux에서 바로 동작하며,
+> Windows에서는 **WSL** 또는 **Git Bash**에서 실행하세요.
 
 ---
 
@@ -108,16 +113,23 @@ cd infra-as-claude
 ./setup.sh
 ```
 
+> `Permission denied`가 나오면 실행 권한을 준 뒤 다시 실행하세요:
+> `chmod +x setup.sh && ./setup.sh` (또는 `bash setup.sh`).
+
 스크립트가 아래 항목들을 물어봅니다:
 
 | 입력 항목           | 예시                    |
 | ------------------- | ----------------------- |
 | AWS 프로필 이름     | `mycompany`             |
-| AWS 리전            | `eu-central-1`          |
+| AWS 리전            | `ap-northeast-2`        |
 | AWS 계정 ID         | `123456789012`          |
 | 메인 도메인         | `example.com`           |
 | VPC ID              | `vpc-0abc1234`          |
 | AWS 자격증명 (선택) | Access Key + Secret Key |
+
+> **아직 `aws configure`로 자격증명을 등록한 적이 없다면**, 마지막 질문에서 `y`를 선택해
+> Access Key ID / Secret Access Key를 지금 입력하세요. 건너뛰면 이후 `/inventory` 실행 시
+> `Unable to locate credentials` 오류가 납니다.
 
 실행 후 자동으로 생성되는 파일:
 
@@ -125,11 +137,35 @@ cd infra-as-claude
 - `.claude/settings.json` — 권한 허용 목록 (`.claude/settings.json.example`에서 생성)
 - `state/`, `logs/` 폴더
 
-### 4단계 — Claude Code 실행
+### 4단계 — 설정 확인
+
+생성된 파일과 AWS 연결이 정상인지 확인합니다:
+
+```bash
+ls CLAUDE.md .claude/settings.json state/ logs/
+aws sts get-caller-identity --profile <내_프로필_이름>
+```
+
+계정 정보가 출력되면 설정이 완료된 것입니다.
+
+### 5단계 — Claude Code 실행
 
 ```bash
 claude
 ```
+
+> 처음 실행하면 브라우저 로그인 안내가 나타납니다. 로그인을 마치면 Claude가 자동으로
+> `CLAUDE.md`를 읽어 AWS 환경을 파악합니다.
+
+이제 슬래시 커맨드나 자연어로 인프라를 다룰 수 있습니다:
+
+```
+/inventory
+"사용하지 않는 리소스 찾아줘"
+"이번 달 예상 비용이 얼마야?"
+```
+
+문제가 생기면 → [설치 가이드 — 문제 해결](docs/setup-guide.md#문제-해결)
 
 ## 슬래시 커맨드
 
@@ -305,7 +341,7 @@ aws * terminate-*
 Fork한 저장소에서 upstream 개선 사항을 가져오려면:
 
 ```bash
-git remote add upstream https://github.com/danny-ys/infra-as-claude.git
+git remote add upstream https://github.com/Jiwook00/infra-as-claude.git
 git fetch upstream
 git merge upstream/main
 ```
