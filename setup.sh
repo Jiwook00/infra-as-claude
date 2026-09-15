@@ -105,7 +105,7 @@ fi
 
 # ── Per-field prompts ─────────────────────────────────────────────────────
 echo ""
-prompt_with_default "AWS region        (e.g. eu-central-1)" "$EXISTING_REGION"
+prompt_with_default "AWS region        (e.g. ap-northeast-2)" "$EXISTING_REGION"
 AWS_REGION="$PROMPT_RESULT"
 
 prompt_with_default "AWS account ID    (12-digit number)" "$EXISTING_ACCOUNT_ID"

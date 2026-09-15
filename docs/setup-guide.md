@@ -33,11 +33,11 @@ aws --version
 
 다음 AWS 관리형 정책을 연결하세요:
 
-| 정책 | 목적 |
-|------|------|
-| `ReadOnlyAccess` | 모든 리소스 읽기 (`/inventory`, `/costs` 등에 필수) |
-| `AmazonEC2FullAccess` | EC2 관리가 필요한 경우 |
-| `ElasticLoadBalancingFullAccess` | ALB 관리가 필요한 경우 |
+| 정책                             | 목적                                                |
+| -------------------------------- | --------------------------------------------------- |
+| `ReadOnlyAccess`                 | 모든 리소스 읽기 (`/inventory`, `/costs` 등에 필수) |
+| `AmazonEC2FullAccess`            | EC2 관리가 필요한 경우                              |
+| `ElasticLoadBalancingFullAccess` | ALB 관리가 필요한 경우                              |
 
 또는 관리하는 서비스에만 범위를 한정한 커스텀 정책을 사용하세요.
 
@@ -53,7 +53,7 @@ aws --version
 ## 3. setup.sh 실행
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/infra-as-claude.git
+git clone https://github.com/내_깃허브_아이디/infra-as-claude.git
 cd infra-as-claude
 ./setup.sh
 ```
@@ -61,7 +61,7 @@ cd infra-as-claude
 프롬프트가 나타나면 다음을 입력하세요:
 
 - **AWS 프로파일 이름** — 이 계정/환경에 사용할 이름 (예: `mycompany`, `prod`, `dev`)
-- **AWS 리전** — 기본 리전 (예: `us-east-1`, `ap-northeast-2`)
+- **AWS 리전** — 기본 리전 (예: `ap-northeast-2`)
 - **AWS 계정 ID** — AWS 콘솔 우측 상단의 12자리 숫자
 - **메인 도메인** — 기본 도메인 (예: `example.com`), 없으면 빈칸으로
 - **VPC ID** — EC2 → VPC 또는 `aws ec2 describe-vpcs --output json` 에서 확인
@@ -102,6 +102,7 @@ claude
 `CLAUDE.md` 를 열어 **보호 리소스** 테이블에 환경의 공유 리소스를 추가하세요. 이 리소스들은 삭제 계획 전에 Claude가 경고를 표시하는 대상입니다.
 
 일반적인 예시:
+
 - 여러 서비스에서 사용하는 공유 ALB
 - 여러 EC2 인스턴스에서 사용하는 배스천 호스트 보안 그룹
 - 여러 서브도메인을 커버하는 ACM 인증서
