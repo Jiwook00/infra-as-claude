@@ -5,6 +5,7 @@ Sync documentation to reflect recent activity and current infrastructure state.
 ### 1. Read recent activity
 
 Check `logs/activity.log` for the last 50 entries. Identify:
+
 - Which AWS resources were queried or modified
 - Any new resources added or removed (compare with `state/` snapshots)
 - Dates of significant changes
@@ -17,12 +18,15 @@ Append a new entry at the top of `CHANGELOG.md` in this format:
 ## [YYYY-MM-DD]
 
 ### Added
+
 - ...
 
 ### Changed
+
 - ...
 
 ### Removed
+
 - ...
 ```
 
@@ -31,6 +35,7 @@ Only include entries for meaningful changes (not routine queries).
 ### 3. Sync commands-reference.md
 
 Scan `.claude/commands/` for all command files. Update `docs/commands-reference.md` to reflect:
+
 - Any new commands added
 - Any commands that were modified
 - Current command list and descriptions
