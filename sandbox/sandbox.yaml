@@ -1,0 +1,138 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  infra-as-claude sandbox (#5). Protected + deletable + auditable resources
+  for validating guard hooks, deny rules and IAM policies. Sandbox account only.
+
+Parameters:
+  AmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-arm64
+    Description: Amazon Linux 2023 (arm64) for t4g.nano
+
+Resources:
+  # ── Network (protected) ─────────────────────────────────────────────────
+  # No IGW / NAT / public IP: nothing here is reachable or billed for IPv4.
+  Vpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.99.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - { Key: Name, Value: iac-sandbox-vpc }
+        - { Key: Protected, Value: "true" }
+        - { Key: Project, Value: iac-sandbox }
+
+  Subnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref Vpc
+      CidrBlock: 10.99.1.0/24
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      MapPublicIpOnLaunch: false
+      Tags:
+        - { Key: Name, Value: iac-sandbox-subnet }
+        - { Key: Project, Value: iac-sandbox }
+
+  # ── Protected: shared SG (P1 guard, P3 tag Deny target) ─────────────────
+  SharedSg:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: shared-sg
+      GroupDescription: Shared SG used by multiple services. Protected.
+      VpcId: !Ref Vpc
+      SecurityGroupIngress:
+        - {
+            IpProtocol: tcp,
+            FromPort: 443,
+            ToPort: 443,
+            CidrIp: 10.99.0.0/16,
+            Description: internal https,
+          }
+      Tags:
+        - { Key: Name, Value: shared-sg }
+        - { Key: Protected, Value: "true" }
+        - { Key: Project, Value: iac-sandbox }
+
+  # ── Deletable: service A (SG + instance + orphan volume) ────────────────
+  SvcASg:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: svc-a-sg
+      GroupDescription: Dedicated SG for svc-a. Safe to delete.
+      VpcId: !Ref Vpc
+      SecurityGroupIngress:
+        - {
+            IpProtocol: tcp,
+            FromPort: 8080,
+            ToPort: 8080,
+            SourceSecurityGroupId: !Ref SharedSg,
+            Description: from shared-sg,
+          }
+      Tags:
+        - { Key: Name, Value: svc-a-sg }
+        - { Key: Project, Value: iac-sandbox }
+
+  SvcAInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t4g.nano
+      ImageId: !Ref AmiId
+      SubnetId: !Ref Subnet
+      # Attached to both: shared-sg is "in use", and svc-a-sg can only be
+      # deleted after the instance is gone (dependency for /plan-removal).
+      SecurityGroupIds: [!Ref SharedSg, !Ref SvcASg]
+      MetadataOptions:
+        HttpTokens: required
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs: { VolumeSize: 8, VolumeType: gp3, DeleteOnTermination: true }
+      Tags:
+        - { Key: Name, Value: svc-a }
+        - { Key: Project, Value: iac-sandbox }
+
+  OrphanVolume:
+    Type: AWS::EC2::Volume
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      AvailabilityZone: !GetAtt Subnet.AvailabilityZone
+      Size: 1
+      VolumeType: gp3
+      Tags:
+        - { Key: Name, Value: svc-a-orphan-data }
+        - { Key: Project, Value: iac-sandbox }
+
+  # ── Audit target: SSH open to the world, unattached (/audit-sg) ─────────
+  LegacySshSg:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: legacy-ssh-sg
+      GroupDescription: Legacy SSH access. Open to 0.0.0.0/0 on purpose for audit.
+      VpcId: !Ref Vpc
+      SecurityGroupIngress:
+        - {
+            IpProtocol: tcp,
+            FromPort: 22,
+            ToPort: 22,
+            CidrIp: 0.0.0.0/0,
+            Description: ssh from anywhere,
+          }
+      Tags:
+        - { Key: Name, Value: legacy-ssh-sg }
+        - { Key: Project, Value: iac-sandbox }
+
+Outputs:
+  VpcId:
+    Value: !Ref Vpc
+  SharedSgId:
+    Description: Protected
+    Value: !Ref SharedSg
+  SvcASgId:
+    Value: !Ref SvcASg
+  SvcAInstanceId:
+    Value: !Ref SvcAInstance
+  OrphanVolumeId:
+    Value: !Ref OrphanVolume
+  LegacySshSgId:
+    Value: !Ref LegacySshSg

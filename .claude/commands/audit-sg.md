@@ -21,9 +21,9 @@ aws ec2 describe-network-interfaces --profile $AWS_PROFILE --region $AWS_REGION 
 
 Extract all inbound rules where source is `0.0.0.0/0` or `::/0`.
 
-| SG ID | SG Name | Port | Protocol | Source | Attached Resource |
-|-------|---------|------|----------|--------|------------------|
-| sg-xxx | web-sg | 80 | TCP | 0.0.0.0/0 | ALB |
+| SG ID  | SG Name | Port | Protocol | Source    | Attached Resource |
+| ------ | ------- | ---- | -------- | --------- | ----------------- |
+| sg-xxx | web-sg  | 80   | TCP      | 0.0.0.0/0 | ALB               |
 
 ### B. Unused Security Groups
 
@@ -32,9 +32,9 @@ Flag any SG not associated with any ENI.
 
 Exclude: `default` SG and any SGs listed in CLAUDE.md as protected.
 
-| SG ID | SG Name | Created | Description |
-|-------|---------|---------|-------------|
-| sg-xxx | old-sg | 2024-01-01 | ... |
+| SG ID  | SG Name | Created    | Description |
+| ------ | ------- | ---------- | ----------- |
+| sg-xxx | old-sg  | 2024-01-01 | ...         |
 
 ### C. SG cross-reference map
 
@@ -60,11 +60,11 @@ Classify each finding:
 ### Audit Summary
 
 | Severity | Count |
-|----------|-------|
-| HIGH | N |
-| MEDIUM | N |
-| LOW | N |
-| INFO | N |
+| -------- | ----- |
+| HIGH     | N     |
+| MEDIUM   | N     |
+| LOW      | N     |
+| INFO     | N     |
 
 ### Detailed Findings
 

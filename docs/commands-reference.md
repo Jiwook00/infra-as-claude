@@ -15,6 +15,7 @@
 **조회 대상**: EC2, ALB, 타겟 그룹, CloudFront, ASG, RDS, Elastic IP, EBS, 보안 그룹, Route 53
 
 **사용법**:
+
 ```
 /inventory
 ```
@@ -30,6 +31,7 @@
 설정된 리전의 온디맨드 가격 기준으로 월간 AWS 비용을 추정합니다.
 
 **사용법**:
+
 ```
 /costs
 /costs my-service    ← 서비스 이름 또는 태그로 필터링
@@ -48,6 +50,7 @@
 **검사 항목**: 미연결 EBS, 미연결 EIP, 빈 타겟 그룹, 중지된 EC2, 미사용 보안 그룹, 고아 Lambda ENI, 미사용 시작 템플릿
 
 **사용법**:
+
 ```
 /find-unused
 ```
@@ -67,6 +70,7 @@
 **위험 등급**: HIGH / MEDIUM / LOW / INFO
 
 **사용법**:
+
 ```
 /audit-sg
 ```
@@ -84,6 +88,7 @@
 공유(보호) 리소스를 자동으로 식별하여 계획에서 제외합니다.
 
 **사용법**:
+
 ```
 /plan-removal my-service
 /plan-removal i-0abc1234
@@ -101,11 +106,13 @@
 최근 활동 로그를 기반으로 문서를 동기화합니다.
 
 **업데이트 대상**:
+
 - `CHANGELOG.md` — 날짜가 포함된 새 항목 추가
 - `docs/commands-reference.md` — `.claude/commands/` 의 커맨드 목록 동기화
 - `README.md` — 상태 스냅샷이 존재하면 인프라 요약 업데이트
 
 **사용법**:
+
 ```
 /update-docs
 ```
@@ -121,6 +128,7 @@
 **커밋 타입**: `feat`, `fix`, `style`, `refactor`, `chore`, `docs`
 
 **사용법**:
+
 ```
 /commit
 ```

@@ -38,23 +38,23 @@ Enter plan mode and output the following:
 
 ### Resources to delete (in order)
 
-| # | Type | Resource ID | Name | Notes |
-|---|------|-------------|------|-------|
-| 1 | Route 53 Record | — | service.example.com | Delete DNS first |
-| 2 | CloudFront | dist-xxx | — | Wait for deployment |
-| 3 | ALB Listener Rule | — | — | Remove rule only, keep ALB |
-| 4 | Target Group | tg-xxx | service-tg | Deregister targets first |
-| 5 | ASG | asg-xxx | service-asg | Set desired=0, then delete |
-| 6 | EC2 | i-xxx | service-server | Terminate after ASG |
-| 7 | Security Group | sg-xxx | service-sg | Delete last |
-| 8 | EBS Volume | vol-xxx | — | Snapshot first? |
+| #   | Type              | Resource ID | Name                | Notes                      |
+| --- | ----------------- | ----------- | ------------------- | -------------------------- |
+| 1   | Route 53 Record   | —           | service.example.com | Delete DNS first           |
+| 2   | CloudFront        | dist-xxx    | —                   | Wait for deployment        |
+| 3   | ALB Listener Rule | —           | —                   | Remove rule only, keep ALB |
+| 4   | Target Group      | tg-xxx      | service-tg          | Deregister targets first   |
+| 5   | ASG               | asg-xxx     | service-asg         | Set desired=0, then delete |
+| 6   | EC2               | i-xxx       | service-server      | Terminate after ASG        |
+| 7   | Security Group    | sg-xxx      | service-sg          | Delete last                |
+| 8   | EBS Volume        | vol-xxx     | —                   | Snapshot first?            |
 
 ### Protected resources (preserved)
 
-| Type | Resource ID | Reason |
-|------|-------------|--------|
-| ALB | alb-xxx | Shared with other services |
-| ... | ... | ... |
+| Type | Resource ID | Reason                     |
+| ---- | ----------- | -------------------------- |
+| ALB  | alb-xxx     | Shared with other services |
+| ...  | ...         | ...                        |
 
 ### Pre-removal checklist
 
